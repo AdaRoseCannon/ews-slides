@@ -2,12 +2,49 @@
 // endbower
 
 html, body {
-	margin: 0;
-	padding: 0;
 	height: 100%;
 	overflow: hidden;
 }
 
-.alert {
-	transition: transform opacity 0.3s ease;
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+.slide-container {
+	overflow: hidden;
+	whitespace: nowrap;
+
+	.slide {
+		margin: 1em 0 0 0;
+		display: inline-block;
+		width: calc(100%);
+		height: calc(100% - 6em);
+		overflow: hidden;
+		position: absolute;
+		transition: transform 1.5s cubic-bezier(0.630, -0.180, 0.360, 1.210);
+		transform: translateX(-100%);
+		padding: 0 1em;
+
+		&.active {
+			transform: translateX(0);
+		}
+
+		&.active~.slide {
+			transform: translateX(100%);
+		}
+
+		.panel {
+			height: calc(100% - 1em);
+		}
+	}
+}
+
+
+
+footer {
+	padding: 1em;
+	opacity: 0.8;
+	position: absolute;
+	bottom: 0;
 }
