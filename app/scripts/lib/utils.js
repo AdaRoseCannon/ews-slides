@@ -1,3 +1,6 @@
+const hogan = require('hogan');
+const utils = require('./lib/utils');
+
 module.exports.randomFrom = function(array) {
 	return array[(Math.floor(Math.random() * array.length))];
 };

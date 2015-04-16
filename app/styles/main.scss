@@ -44,14 +44,10 @@ body {
 			&.panel-info {
 				max-height: calc(100% - 1em);
 				overflow: auto;
-				&.panel-footer{
-					button {
-						display: none;
-					}
+				.panel-footer{
+					display: none;
 					body.controller & {
-						button {
-							display: block;
-						}
+						display: block;
 					}
 				}
 			}

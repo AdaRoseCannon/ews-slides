@@ -1,12 +1,10 @@
-const hogan = require('hogan');
-const utils = require('./lib/utils');
 const slide = require('./lib/slides');
 const Hammer = require('hammerjs');
-
-var touches = new Hammer($('.slide-container')[0]);
-touches.set({ direction: Hammer.DIRECTION_HORIZONTAL });
-touches.on('swipeleft', goToNextSlide);
-touches.on('swiperight', goToPrevSlide);
+const webrtc = require('./lib/webrtc');
+let requestSlide = (() => {});
+webrtc().then(d => requestSlide = d.requestSlide, err => {
+	console.error('Failure to connect to webrtc', err)
+});
 
 function goToSlide(i) {
 	const newSlide = $(`#slide-${i}`);
@@ -16,6 +14,7 @@ function goToSlide(i) {
 		$(`#slide-${i}`).addClass('active');
 		slide.setup(`slide-${i}`);
 		slide.teardown(oldSlide);
+		requestSlide(i);
 	}
 }
 
@@ -40,8 +39,10 @@ window.addEventListener('keyup', e => {
 	}
 });
 
+var touches = new Hammer($('.slide-container')[0]);
+touches.set({ direction: Hammer.DIRECTION_HORIZONTAL });
+touches.on('swipeleft', goToNextSlide);
+touches.on('swiperight', goToPrevSlide);
+$('.next-button').on('click', goToNextSlide);
+$('.prev-button').on('click', goToPrevSlide);
 goToSlide(0);
-
-window.goToSlide = goToSlide;
-window.goToNextSlide = goToNextSlide;
-window.goToPrevSlide = goToPrevSlide;
