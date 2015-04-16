@@ -1,0 +1,9 @@
+{
+  "name": "phys",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "bootstrap-material-design": "~0.3.0",
+    "bootstrap": "~3.3.4"
+  }
+}
