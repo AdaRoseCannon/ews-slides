@@ -22,7 +22,7 @@ body {
 		height: calc(100% - 6em);
 		overflow: hidden;
 		position: absolute;
-		transition: transform 1.5s cubic-bezier(0.630, -0.180, 0.360, 1.210);
+		transition: transform 1.5s cubic-bezier(0.030, 0.200, 0.360, 1.210);
 		transform: translateX(-100%);
 		padding: 0 1em;
 
