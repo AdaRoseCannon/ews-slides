@@ -34,8 +34,58 @@ body {
 			transform: translateX(100%);
 		}
 
-		.panel {
-			height: calc(100% - 1em);
+		> .panel {
+
+			&.panel-primary {
+				height: calc(100% - 1em);
+				display: none;
+			}
+
+			&.panel-info {
+				max-height: calc(100% - 1em);
+				overflow: auto;
+				&.panel-footer{
+					button {
+						display: none;
+					}
+					body.controller & {
+						button {
+							display: block;
+						}
+					}
+				}
+			}
+
+			@media (min-width: 700px) {
+
+				&.panel-info {
+					display: none;
+				}
+
+				&.panel-primary {
+					display: block;
+				}
+			}
+
+			body.slides & {
+				&.panel-info {
+					display: none;
+				}
+
+				&.panel-primary {
+					display: block;
+				}
+			}
+
+			body.notes &, body.controller & {
+				&.panel-info {
+					display: block;
+				}
+
+				&.panel-primary {
+					display: none;
+				}
+			}
 		}
 	}
 }
