@@ -28,7 +28,7 @@ body {
 		overflow: hidden;
 		position: absolute;
 		transition: transform 1.5s cubic-bezier(0.030, 0.200, 0.360, 1.210);
-		transform: translateX(-100%) rotateY(-10deg);
+		transform: translateX(-100%) translateZ(-50px) rotateY(-10deg);
 		padding: 0 1em;
 
 		&.active {
@@ -36,7 +36,7 @@ body {
 		}
 
 		&.active~.slide {
-			transform: translateX(100%)  rotateY(10deg);
+			transform: translateX(100%) translateZ(-50px) rotateY(10deg);
 		}
 
 		> .panel {

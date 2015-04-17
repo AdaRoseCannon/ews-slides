@@ -6,10 +6,7 @@ let slideClients = [];
 
 var myPeer;
 const peerSettings = {
-	host: location.hostname,
-	path:"/peerjs",
-	port: 9000,
-	secure: location.hostname.indexOf('1am.club') !== -1,
+	key: 'l9uje6f673zq6w29',
 	debug: 2
 };
 
@@ -23,7 +20,7 @@ function sendData(dataConn, type, data) {
 module.exports = function setup(controller = true) {
 	return new Promise((resolve, reject) => {
 
-		myPeer = (controller ? new Peer('ada-slides-controller', peerSettings) : new Peer(peerSettings))
+		myPeer = (controller ? new Peer(masterName, peerSettings) : new Peer(peerSettings))
 			.on('error', e => {
 				if (e.type === "unavailable-id") {
 					controller = false;

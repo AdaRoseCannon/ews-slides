@@ -90,7 +90,7 @@ gulp.task('html', ['styles'], function () {
 });
 
 gulp.task('images', function () {
-	return gulp.src('app/images/**/*')
+	return gulp.src('app/images/**/*.{png, jpg, jpeg, gif}')
 		.pipe($.cache($.imagemin({
 			progressive: true,
 			interlaced: true
