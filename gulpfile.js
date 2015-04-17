@@ -23,6 +23,13 @@ gulp.task('styles', function () {
 gulp.task('browserify', function () {
 	try {
 		fs.mkdirSync('.tmp');
+	} catch (e) {
+		if (e.code !== 'EEXIST') {
+			throw e;
+		}
+	}
+
+	try {
 		fs.mkdirSync('.tmp/scripts');
 	} catch (e) {
 		if (e.code !== 'EEXIST') {
@@ -56,7 +63,7 @@ gulp.task('browserify', function () {
 		} else {
 			return undefined;
 		}
-	})).then(function (a) {
+	})).then(function () {
 		process.stdout.write('Browserify: Finished all\n');
 	}, function (e) {
 		process.stdout.write(e);
@@ -166,15 +173,19 @@ gulp.task('build', ['browserify', 'html', 'images', 'fonts', 'extras'], function
 	return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
-gulp.task('deploy', ['clean', 'build'], function () {
+gulp.task('ship', function () {
 	return gulp.src('./dist/**/*')
 		.pipe(require('gulp-gh-pages')({
-			origin: 'ssh://ada@ssh.1am.club/~/public_html/ews-slides.git',
-			remoteUrl: 'ssh://ada@ssh.1am.club/~/public_html/ews-slides.git',
+			origin: 'ssh://ada@ssh.1am.club/~/public_html/ews-slides/.git',
+			remoteUrl: 'ssh://ada@ssh.1am.club/~/public_html/ews-slides/.git',
 			branch: 'master'
 		}));
 });
 
-gulp.task('default', ['clean'], function () {
+gulp.task('deploy', ['clean', 'build'], function () {
+	gulp.start('ship');
+});
+
+gulp.task('default', ['clean', 'build'], function () {
 	gulp.start('build');
 });
