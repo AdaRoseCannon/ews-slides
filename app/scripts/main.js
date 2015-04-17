@@ -1,3 +1,5 @@
+'use strict';
+
 const slide = require('./lib/slides');
 const Hammer = require('hammerjs');
 const webrtc = require('./lib/webrtc');
