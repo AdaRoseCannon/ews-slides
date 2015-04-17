@@ -26,6 +26,12 @@ function goToPrevSlide() {
 	goToSlide($('.slide.active').prevAll().length - 1);
 }
 
+function triggerEvent() {
+	if(slide.triggerEvent.next().done) {
+		goToNextSlide();
+	}
+}
+
 window.addEventListener('keyup', e => {
 	switch(e.keyCode) {
 		case 37:
@@ -34,7 +40,7 @@ window.addEventListener('keyup', e => {
 
 		case 13:
 		case 39:
-			goToNextSlide();
+			triggerEvent();
 			break;
 	}
 });
@@ -45,4 +51,5 @@ touches.on('swipeleft', goToNextSlide);
 touches.on('swiperight', goToPrevSlide);
 $('.next-button').on('click', goToNextSlide);
 $('.prev-button').on('click', goToPrevSlide);
+$('.slide-container').on('click', triggerEvent);
 goToSlide(0);
