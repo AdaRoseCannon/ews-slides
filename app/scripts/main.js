@@ -59,8 +59,8 @@ window.addEventListener('keyup', e => {
 
 var touches = new Hammer($('.slide-container')[0]);
 touches.set({ direction: Hammer.DIRECTION_HORIZONTAL });
-touches.on('swipeleft', goToNextSlide);
-touches.on('swiperight', goToPrevSlide);
+touches.on('swipeleft', () => goToNextSlide());
+touches.on('swiperight', () => goToPrevSlide());
 $('.next-button').on('click', goToNextSlide);
 $('.prev-button').on('click', goToPrevSlide);
 $('.slide-container').on('click', triggerEvent);
