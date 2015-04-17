@@ -6,7 +6,10 @@ let slideClients = [];
 
 var myPeer;
 const peerSettings = {
-	key: 'l9uje6f673zq6w29',
+	host: '/',
+	path:"/peerjs",
+	port: 9000,
+	secure: location.hostname.indexOf('1am.club') !== -1,
 	debug: 2
 };
 
