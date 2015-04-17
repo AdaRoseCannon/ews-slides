@@ -104,8 +104,8 @@ gulp.task('scripts', ['browserify'], function () {
 });
 
 gulp.task('fonts', function () {
-	return gulp.src(require('main-bower-files')().concat('app/fonts/**/*').concat('bower_components'))
-		.pipe($.filter('**/*.{eot,svg,ttf,woff}'))
+	return gulp.src(require('main-bower-files')().concat('app/fonts/**/*').concat('bower_components/**/*'))
+		.pipe($.filter('**/*.{eot,svg,ttf,woff,woff2}'))
 		.pipe($.flatten())
 		.pipe(gulp.dest('dist/fonts'));
 });
