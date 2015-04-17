@@ -89,12 +89,17 @@ gulp.task('html', ['styles'], function () {
 		.pipe(gulp.dest('dist'));
 });
 
-gulp.task('images', function () {
-	return gulp.src('app/images/**/*.{png, jpg, jpeg, gif}')
+gulp.task('images-min', function () {
+	return gulp.src('app/images/**/*')
 		.pipe($.cache($.imagemin({
 			progressive: true,
 			interlaced: true
 		})))
+		.pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('images', ['images-min'], function () {
+	return gulp.src('app/images/**/*.svg')
 		.pipe(gulp.dest('dist/images'));
 });
 

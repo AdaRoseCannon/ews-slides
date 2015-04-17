@@ -2,14 +2,14 @@
 const EventEmitter = require('events').EventEmitter;
 const Peer = require('peerjs');
 const masterName = 'ada-slides-controller';
-let slideClients = [];
 
 var myPeer;
+const on1am = location.hostname.indexOf('1am.club') !== -1;
 const peerSettings = {
-	host: '/',
+	host: on1am ? '1am.club' : '/',
 	path:"/peerjs",
 	port: 9000,
-	secure: location.hostname.indexOf('1am.club') !== -1,
+	secure: on1am,
 	debug: 2
 };
 
@@ -38,33 +38,47 @@ module.exports = function setup(controller = true) {
 			})
 			.on('open', resolve);
 	}).then(id => {
+
+		class WebrtcUser {
+			constructor(controller) {
+				const ev = new EventEmitter();
+				this.on = ev.on.bind(this);
+				this.fire = ev.emit.bind(this);
+				this.slideClients = [];
+				this.controller = controller;
+			}
+
+			addClient(dataConn) {
+				this.slideClients.push(dataConn);
+			}
+
+			requestSlide(i) {
+				console.log('Requseting slide', i);
+				this.slideClients.forEach(dc => sendData(dc, 'goToSlide', i));
+			}
+
+			triggerRemoteEvent() {
+				console.log('Triggering remote interaction event');
+				this.slideClients.forEach(dc => sendData(dc, 'triggerEvent'));
+			}
+		}
+		let user = new WebrtcUser();
+
 		if (controller) {
 			console.log('You have the power', id);
 			document.body.classList.add('controller');
-			myPeer.on('connection', dataConn => slideClients.push(dataConn));
-			return {
-				controller: true,
-				requestSlide(i) {
-					console.log('Requseting slide', i);
-					slideClients.forEach(dc => sendData(dc, 'goToSlide', i));
-				},
-				triggerRemoteEvent() {
-					console.log('Triggering remote interaction event');
-					slideClients.forEach(dc => sendData(dc, 'triggerEvent'));
-				},
-				on() {}
-			};
+			myPeer.on('connection', dataConn => {
+				console.log('recieved connection from', dataConn.peer);
+				user.addClient.push(dataConn);
+			});
 		} else {
 			console.log('You are the slides', id);
 			var dc = myPeer.connect(masterName);
-			var ev = new EventEmitter();
-			dc.on('data', data => ev.emit(data.type, data.data));
-			return {
-				controller: true,
-				on: ev.on,
-				requestSlide() {},
-				triggerRemoteEvent() {}
-			};
+			dc.on('data', data => {
+				console.log('recieved instructions', JSON.stringify(data));
+				user.fire(data.type, data.data);
+			});
 		}
+		return user;
 	});
 };

@@ -27,6 +27,13 @@ function goToPrevSlide() {
 	goToSlide($('.slide.active').prevAll().length - 1);
 }
 
+function goToSlideBySelector(s) {
+	var target = $(s);
+	if (target.hasClass('slide')) {
+		goToSlide(target.prevAll().length);
+	}
+}
+
 function triggerEvent() {
 	triggerRemoteEvent();
 	if(slide.triggerEvent.next().done) {
@@ -34,11 +41,11 @@ function triggerEvent() {
 	}
 }
 
-webrtc(location.hash === '#controller').then(d => {
-	requestSlide = d.requestSlide;
-	triggerRemoteEvent = d.triggerRemoteEvent;
-	d.on('goToSlide', goToSlide);
-	d.on('triggerEvent', triggerEvent);
+webrtc(location.hash === '#controller').then(user => {
+	requestSlide = user.requestSlide;
+	triggerRemoteEvent = user.triggerRemoteEvent;
+	user.on('goToSlide', goToSlide);
+	user.on('triggerEvent', triggerEvent);
 }, err => {
 	console.error('Failure to connect to webrtc', err);
 });
@@ -57,11 +64,20 @@ window.addEventListener('keyup', e => {
 	}
 });
 
+if (location.hash) {
+	goToSlideBySelector(location.hash);
+}
+
 var touches = new Hammer($('.slide-container')[0]);
 touches.set({ direction: Hammer.DIRECTION_HORIZONTAL });
 touches.on('swipeleft', () => goToNextSlide());
 touches.on('swiperight', () => goToPrevSlide());
-$('.next-button').on('click', goToNextSlide);
-$('.prev-button').on('click', goToPrevSlide);
+$('.next-button').on('click', e => {
+	goToNextSlide();
+	e.stopPropagation();
+});
+$('.prev-button').on('click', e => {
+	goToPrevSlide();
+	e.stopPropagation();
+});
 $('.slide-container').on('click', triggerEvent);
-goToSlide(0);
