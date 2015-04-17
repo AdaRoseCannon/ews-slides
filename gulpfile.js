@@ -187,10 +187,10 @@ gulp.task('ship', function () {
 		}));
 });
 
-gulp.task('deploy', ['clean', 'build'], function () {
-	gulp.start('ship');
+gulp.task('deploy', ['build'], function () {
+	return gulp.start('ship');
 });
 
 gulp.task('default', ['clean'], function () {
-	gulp.start('build');
+	return gulp.start('build');
 });
