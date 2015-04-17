@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="description" content="">
+		<link rel="icon" type="image/ico" href="favicon.ico">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,target-densitydpi=device-dpi, user-scalable=no, minimal-ui" />
 		<title>EWS</title>
 		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -27,13 +28,16 @@
 
 			<div class="slide" id="slide-0">
 				<div class="panel panel-primary"><div class="panel-body">
-					<h1>Extensible Web Summit Lightning Talk - 2015</h1>
-					<h1>Ada Rose Edwards - FTLabs</h1>
+					<div class="ftlabs-title-container">
+						<h1>Extensible Web Summit 2015</h1>
+						<h3>Ada Rose Edwards - FTLabs<br />@lady_ada_king</h3>
+					</div>
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body">
-						Welcome Notes
+						Ada Rose from FTLabs, i’m here to talk today about animation performance.
+    					There is much more to say than can fit into a 5 minute talk so I will rush over a few good concepts needed for good performance. I will avoid going into details on the render pipeline for excellent coverage of that watch some talks by Paul Kinlan.
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -41,21 +45,180 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="slide" id="slide-1">
 				<div class="panel panel-primary"><div class="panel-body">
-					<h1>Slide 1</h1>
+					<h1>Performance, what is jank?</h1>
+					<div class="demo"><h3>Jank Demo Goes here</h3></div>
 				</div></div>
+				<div class="panel panel-info notes">
+					<div class="panel-heading">Notes</div>
+					<div class="panel-body">
+						Jank - Frame takes longer to layout and render than 16ms. Causes a stutter it feels bad.
+						<h5>What could make a frame last longer than 16ms?</h5>
+						Long synchronous main thread JS ops, e.g. long calculations, synchronous IO events, but most likely it’s the DOM changing such a way so that layout needs to be recalculated or areas of the page need to be repainted.
+							Layout and Painting are expensive, compositing the last step to get the is cheap.
+						<h5>What causes Re-layouts?</h5>
+						Anything which taints the browsers existing models of how the document is laid out. Once this model is accessed and it has been tainted then the browser needs to recalculate the layout. This model is accessed everytime a script queries the layout properties of an element or a new frame is rendered.
+					</div>
+					<div class="panel-footer">
+						<button type="button" class="btn btn-default prev-button">Previous</button>
+						<button type="button" class="btn btn-primary next-button">Next</button>
+					</div>
+				</div>
 			</div>
+
 			<div class="slide" id="slide-2">
 				<div class="panel panel-primary"><div class="panel-body">
-					<h1>Slide 2</h1>
+					<div class="ftlabs-title-container">
+						<h1>Bad Stuff</h1>
+						<div class="demo"><h3>Two demos go here</h3></div>
+					</div>
 				</div></div>
+				<div class="panel panel-info notes">
+					<div class="panel-heading">Notes</div>
+					<div class="panel-body">
+						<p>Animating properties which need a layout in css/js will require at least a re-layout on every frame. <b>Example</b></p>
+						<p>Writing and then reading a layout attribute in a loop. WIll cause a relayout on every single read, disasterous! <b>Example</b></p>
+					</div>
+					<div class="panel-footer">
+						<button type="button" class="btn btn-default prev-button">Previous</button>
+						<button type="button" class="btn btn-primary next-button">Next</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="slide" id="slide-3">
+				<div class="panel panel-primary"><div class="panel-body">
+					<div class="ftlabs-title-container">
+						<h1>As developers what this means for us</h1>
+						<div class="demo"><h3><pre>
+.containment {
+	height: <fixed value>
+	width: <fixed value or a %>
+	overflow: hidden
+	position: absolute
+}
+						</pre></h3></div>
+					</div>
+				</div></div>
+				<div class="panel panel-info notes">
+					<div class="panel-heading">Notes</div>
+					<div class="panel-body">
+						There are some band aid solutions: For non animated changes use a tool like FastDom which will batch DOM reads and writes so that only one layout occurs.
+
+						There is a currently in draft css spec for containment which lets the browser know that this element is independent from the rest of the page and thus if it is changed don’t invalidate the whole DOM tree’s layout, we refer to these as layout boundaries. This can be achieved today (although it is down to the individual implementation in the UA) by defining certain style attributes the UA should determine that it is in such a state at least in chrome anyway.
+					</div>
+					<div class="panel-footer">
+						<button type="button" class="btn btn-default prev-button">Previous</button>
+						<button type="button" class="btn btn-primary next-button">Next</button>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="slide" id="slide-3">
+				<div class="panel panel-primary"><div class="panel-body">
+					<div class="ftlabs-title-container">
+						<h1>As developers what this means for us</h1>
+					</div>
+				</div></div>
+				<div class="panel panel-info notes">
+					<div class="panel-heading">Notes</div>
+					<div class="panel-body">
+						There are some band aid solutions: For non animated changes use a tool like FastDom which will batch DOM reads and writes so that only one layout occurs.
+
+						There is a currently in draft css spec for containment which lets the browser know that this element is independent from the rest of the page and thus if it is changed don’t invalidate the whole DOM tree’s layout, we refer to these as layout boundaries. This can be achieved today (although it is down to the individual implementation in the UA) by defining certain style attributes the UA should determine that it is in such a state at least in chrome anyway.
+					</div>
+					<div class="panel-footer">
+						<button type="button" class="btn btn-default prev-button">Previous</button>
+						<button type="button" class="btn btn-primary next-button">Next</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="slide" id="slide-4">
+				<div class="panel panel-primary"><div class="panel-body">
+					<div class="ftlabs-title-container">
+						<h1>But! it's not all easy</h1>
+					</div>
+				</div></div>
+				<div class="panel panel-info notes">
+					<div class="panel-heading">Notes</div>
+					<div class="panel-body">
+						<p>But! Animating anything which relayouts the page during the animation requires lots of extra work for us the developer to avoid doing lots of work in the browser.</p>
+
+						<p>The best solution i’ve seen involves measuring the end position and the start position and then repositioning every element back to their original location using css transforms. Adding the animation and then resetting the transforms.</p>
+
+						<p>Whilst working on another project I wanted to change the dom and then dynamically grow the container to fill the new space then fade in the new element. Which had the new challenge since animating height is very expensive how could I animate this using scale. Well here’s how:</p>
+
+						<p>Primarily we take advantage that it only animates on an interaction so we can take our time to measure everything make a change then remeasure, we have a whole ~50-100ms before this feels unresponsive. (Do it on touchdown if you have not removed the 100ms touch delay)</p>
+					</div>
+					<div class="panel-footer">
+						<button type="button" class="btn btn-default prev-button">Previous</button>
+						<button type="button" class="btn btn-primary next-button">Next</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="slide" id="slide-5">
+				<div class="panel panel-primary"><div class="panel-body">
+					<div class="ftlabs-title-container">
+						<h1>Here is how I do it</h1>
+						<div class="demo"><h3>Awesome step by step demo where after each point the code moves on. Slowly demoing how the browser does it. Live!!</h3></div>
+					</div>
+				</div></div>
+				<div class="panel panel-info notes">
+					<div class="panel-heading">Notes</div>
+					<div class="panel-body">
+						<ul>
+							<li>Measure everything we want to measure.</li>
+							<li>store the current animation set it to ‘0s’</li>
+							<li>Perform the function</li>
+							<li>Measure the new positions, sizes,</li>
+							<li>Calculate the heirarchies of elements</li>
+							<li>Anything which has changed size: scale it and all give all of its children the inverse transform.</li>
+							<li>apply the translations</li>
+							<li>apply the parents transition to everything</li>
+							<li>set all of the transforms to their original values</li>
+							<li>watch everything smoothly animate.</li>
+						</ul>
+					</div>
+					<div class="panel-footer">
+						<button type="button" class="btn btn-default prev-button">Previous</button>
+						<button type="button" class="btn btn-primary next-button">Next</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="slide" id="slide-6">
+				<div class="panel panel-primary"><div class="panel-body">
+					<div class="ftlabs-title-container">
+						<h1>References</h1>
+						<ul>
+							<li>http://dev.w3.org/csswg/css-containment/</li>
+							<li>Fastdom</li>
+							<li>http://csstriggers.com/</li>
+							<li>https://css-tricks.com/things-chrome-dev-summit-2014/</li>
+						</ul>
+					</div>
+				</div></div>
+				<div class="panel panel-info notes">
+					<div class="panel-heading">Notes</div>
+					<div class="panel-body">
+						Thanks, any questions.
+					</div>
+					<div class="panel-footer">
+						<button type="button" class="btn btn-default prev-button">Previous</button>
+						<button type="button" class="btn btn-primary next-button">Next</button>
+					</div>
+				</div>
 			</div>
 
 		</div>
 		<footer>
-			Ada Rose Edwards<br />
-			Extensible Web Summit Lightning Talk - 2015
+			<small>Ada Rose Edwards - @lady_ada_king<br />
+			Extensible Web Summit Lightning Talk - 2015</small>
 		</footer>
 		<!-- build:js scripts/bower.js -->
 		<script src="../bower_components/jquery/dist/jquery.min.js"></script>

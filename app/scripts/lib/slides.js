@@ -1,18 +1,15 @@
 var slideFuncs = {
 	'slide-0': {
-		setup() {
-			console.log('Setup', this);
-		},
+		setup() {},
 		action: function* () {
-			console.log('Action 1');
-			yield;
-			console.log('Action 2');
 			yield;
 		},
-		teardown() {
-			console.log('Teardown', this);
-		}
+		teardown() {}
 	}
+};
+
+module.exports.triggerEvent = {
+	next() {}
 };
 
 module.exports.setup = function (name) {

@@ -7,13 +7,14 @@ let requestSlide = (() => {});
 let triggerRemoteEvent = (() => {});
 
 function goToSlide(i) {
-	const newSlide = $(`#slide-${i}`);
-	const oldSlide = $('.slide.active').attr('id');
+	const newSlide = $(`.slide:nth-child(${i + 1})`);
+	const oldSlide = $('.slide.active');
+	const oldSlideId = oldSlide.attr('id');
 	if (newSlide[0]) {
-		$('.slide').removeClass('active');
-		$(`#slide-${i}`).addClass('active');
-		slide.setup(`slide-${i}`);
-		slide.teardown(oldSlide);
+		oldSlide.removeClass('active');
+		newSlide.addClass('active');
+		slide.setup(newSlide.attr('id'));
+		slide.teardown(oldSlideId);
 		requestSlide(i);
 	}
 }
@@ -33,13 +34,13 @@ function triggerEvent() {
 	}
 }
 
-webrtc().then(d => {
+webrtc(location.hash === '#controller').then(d => {
 	requestSlide = d.requestSlide;
 	triggerRemoteEvent = d.triggerRemoteEvent;
 	d.on('goToSlide', goToSlide);
 	d.on('triggerEvent', triggerEvent);
 }, err => {
-	console.error('Failure to connect to webrtc', err)
+	console.error('Failure to connect to webrtc', err);
 });
 
 
