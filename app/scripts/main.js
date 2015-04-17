@@ -2,9 +2,7 @@ const slide = require('./lib/slides');
 const Hammer = require('hammerjs');
 const webrtc = require('./lib/webrtc');
 let requestSlide = (() => {});
-webrtc().then(d => requestSlide = d.requestSlide, err => {
-	console.error('Failure to connect to webrtc', err)
-});
+let triggerRemoteEvent = (() => {});
 
 function goToSlide(i) {
 	const newSlide = $(`#slide-${i}`);
@@ -27,10 +25,21 @@ function goToPrevSlide() {
 }
 
 function triggerEvent() {
+	triggerRemoteEvent();
 	if(slide.triggerEvent.next().done) {
 		goToNextSlide();
 	}
 }
+
+webrtc().then(d => {
+	requestSlide = d.requestSlide;
+	triggerRemoteEvent = d.triggerRemoteEvent;
+	d.on('goToSlide', goToSlide);
+	d.on('triggerEvent', triggerEvent);
+}, err => {
+	console.error('Failure to connect to webrtc', err)
+});
+
 
 window.addEventListener('keyup', e => {
 	switch(e.keyCode) {

@@ -9,6 +9,7 @@ const peerSettings = {
 	host: location.hostname,
 	path:"/peerjs",
 	port: 9000,
+	secure: location.hostname.indexOf('1am.club') !== -1,
 	debug: 2
 };
 
@@ -47,17 +48,22 @@ module.exports = function setup(controller = true) {
 					console.log('Requseting slide', i);
 					slideClients.forEach(dc => sendData(dc, 'goToSlide', i));
 				},
+				triggerRemoteEvent() {
+					console.log('Triggering remote interaction event');
+					slideClients.forEach(dc => sendData(dc, 'triggerEvent'));
+				},
 				on() {}
 			};
 		} else {
 			console.log('You are the slides', id);
-			myPeer.connect(masterName);
-			myPeer.on('data', data => console.log(data));
+			var dc = myPeer.connect(masterName);
 			var ev = new EventEmitter();
+			dc.on('data', data => ev.emit(data.type, data.data));
 			return {
 				controller: true,
 				on: ev.on,
-				requestSlide() {}
+				requestSlide() {},
+				triggerRemoteEvent() {}
 			};
 		}
 	});

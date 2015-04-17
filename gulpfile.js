@@ -166,6 +166,15 @@ gulp.task('build', ['browserify', 'html', 'images', 'fonts', 'extras'], function
 	return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
+gulp.task('deploy', ['clean', 'build'], function () {
+	return gulp.src('./dist/**/*')
+		.pipe(require('gulp-gh-pages')({
+			origin: 'ssh://ada@ssh.1am.club/~/public_html/ews-slides.git',
+			remoteUrl: 'ssh://ada@ssh.1am.club/~/public_html/ews-slides.git',
+			branch: 'master'
+		}));
+});
+
 gulp.task('default', ['clean'], function () {
 	gulp.start('build');
 });
