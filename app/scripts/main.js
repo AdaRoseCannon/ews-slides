@@ -66,6 +66,8 @@ window.addEventListener('keyup', e => {
 
 if (location.hash) {
 	goToSlideBySelector(location.hash);
+} else {
+	goToSlide(0);
 }
 
 var touches = new Hammer($('.slide-container')[0]);
