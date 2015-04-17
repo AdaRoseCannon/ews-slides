@@ -42,8 +42,8 @@ function triggerEvent() {
 }
 
 webrtc(location.hash === '#controller').then(user => {
-	requestSlide = user.requestSlide;
-	triggerRemoteEvent = user.triggerRemoteEvent;
+	requestSlide = user.requestSlide.bind(user);
+	triggerRemoteEvent = user.triggerRemoteEvent.bind(user);
 	user.on('goToSlide', goToSlide);
 	user.on('triggerEvent', triggerEvent);
 }, err => {
