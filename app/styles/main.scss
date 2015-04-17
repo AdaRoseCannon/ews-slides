@@ -44,7 +44,7 @@ body {
 			&.panel-primary {
 				height: calc(100% - 1em);
 				display: none;
-				&, & pre {
+				&, & pre, & li {
 					font-size: 1.5em;
 				}
 			}
