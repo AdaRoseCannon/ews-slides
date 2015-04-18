@@ -1,6 +1,18 @@
 // bower:scss
 // endbower
 
+@-webkit-keyframes bad {
+	0% {width: 1.5em;}
+	50% {width: 4em;}
+	100% {width: 1.5em;}
+}
+
+@-webkit-keyframes squidge {
+	0% {width: 100%;}
+	50% {width: 60%;}
+	100% {width: 100%;}
+}
+
 html, body {
 	width: 100%;
 	height: 100%;
@@ -31,6 +43,10 @@ body {
 		transform: translateX(-100%) translateZ(-50px) rotateY(-10deg);
 		padding: 0 1em;
 
+		img {
+			max-width: 100%;
+		}
+
 		&.active {
 			transform: translateX(0);
 		}
@@ -47,6 +63,7 @@ body {
 				&, & pre, & li {
 					font-size: 1.5em;
 				}
+				overflow: hidden;
 			}
 
 			&.panel-info {
@@ -119,6 +136,46 @@ body {
 			}
 
 			color: white;
+		}
+	}
+
+	.emoji-image-container {
+		font-size: 10em;
+		line-height: 1em;
+		padding: 0 0.1em 0.1em 0.1em;
+		border: 1px solid grey;
+		margin: 0.2em;
+		text-align: center;
+		border-radius: 0.2em;
+		width: 1.5em;
+		color: green;
+		float: left;
+	}
+
+	#slide-2 {
+
+		.render-here {
+			font-size: 0.5em;
+			color: grey;
+
+			.bad-anim-div {
+				color: red;
+				float: left;
+				animation-name: bad;
+				animation-duration: 4s;
+				animation-iteration-count: infinite;
+
+				&.bad2 {
+					float: right;
+					animation-delay: 2s;
+				}
+			}
+
+			.squidge {
+				animation-name: squidge;
+				animation-duration: 4s;
+				animation-iteration-count: infinite;
+			}
 		}
 	}
 }

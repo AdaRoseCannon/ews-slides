@@ -1,9 +1,4 @@
 const hogan = require('hogan');
-const utils = require('./lib/utils');
-
-module.exports.randomFrom = function(array) {
-	return array[(Math.floor(Math.random() * array.length))];
-};
 
 module.exports.animateHeightChange = function animateHeightChange(f, el, children, options, callback) {
 

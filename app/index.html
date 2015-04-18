@@ -40,7 +40,6 @@
     					There is much more to say than can fit into a 5 minute talk so I will rush over a few good concepts needed for good performance. I will avoid going into details on the render pipeline for excellent coverage of that watch some talks by Paul Lewis.
 					</div>
 					<div class="panel-footer">
-						<button type="button" class="btn btn-default prev-button">Previous</button>
 						<button type="button" class="btn btn-primary next-button">Next</button>
 					</div>
 				</div>
@@ -49,17 +48,35 @@
 			<div class="slide" id="slide-1">
 				<div class="panel panel-primary"><div class="panel-body">
 					<h1>Performance, what is jank?</h1>
-					<div class="demo"><h3>Jank Demo Goes here</h3></div>
+					<div class="render-here"></div>
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body">
-						Jank - Frame takes longer to layout and render than 16ms. Causes a stutter it feels bad.
-						<h5>What could make a frame last longer than 16ms?</h5>
-						Long synchronous main thread JS ops, e.g. long calculations, synchronous IO events, but most likely it’s the DOM changing such a way so that layout needs to be recalculated or areas of the page need to be repainted.
-							Layout and Painting are expensive, compositing the last step to get the is cheap.
-						<h5>What causes Re-layouts?</h5>
-						Anything which taints the browsers existing models of how the document is laid out. Once this model is accessed and it has been tainted then the browser needs to recalculate the layout. This model is accessed everytime a script queries the layout properties of an element or a new frame is rendered.
+
+						<ul>
+							<li>Jank is when the frame takes longer to layout and render than 16ms. Causes a stutter it feels bad.</li>
+							<li>Caused by slow synchronous events</li>
+							<li>e.g. XHR, big localstorage uses but most commonly...</li>
+							<li>Page layouts and paints</li>
+						</ul>
+						<hr />
+						<ul>
+							<li>Layout is slowest</li>
+							<li>Making a small DOM change could potentially invalidate the entire DOM tree causing it to be recalculated</li>
+							<li>An invalidated DOM is recalculated each frame and whenever a layout property is read</li>
+						</ul>
+						<hr />
+						<ul>
+							<li>Paint is medium slow</li>
+							<li>This is where the layer's bitmap has been invalidated and needs to be redrawn and stored in memory</li>
+							<li>This is done on each render</li>
+						</ul>
+						<hr />
+						<ul>
+							<li>Composite is very fast</li>
+							<li>Composite only involves the graphics card rerendering from bitmaps calculated in paint/li>
+						</ul>
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -72,14 +89,16 @@
 				<div class="panel panel-primary"><div class="panel-body">
 					<div class="ftlabs-title-container">
 						<h1>Bad Stuff</h1>
-						<div class="demo"><h3>Two demos go here</h3></div>
+						<div class="render-here"></div>
 					</div>
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
-					<div class="panel-body">
-						<p>Animating properties which need a layout in css/js will require at least a re-layout on every frame. <b>Example</b></p>
-						<p>Writing and then reading a layout attribute in a loop. WIll cause a relayout on every single read, disasterous! <b>Example</b></p>
+					<div class="panel-body marked">
+* Two commonly seen mistakes
+* The First is Reading then writing in a loop which thrashes the DOM
+* The second is animating properties which cause layouts on the DOM
+-----------
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>

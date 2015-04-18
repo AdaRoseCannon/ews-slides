@@ -1,8 +1,14 @@
 'use strict';
 
 const slide = require('./lib/slides');
-const Hammer = require('hammerjs');
+// const Hammer = require('hammerjs');
 const webrtc = require('./lib/webrtc');
+const marked = require('marked');
+
+$('.marked').each(function () {
+	$(this).html(marked($(this).html()));
+});
+
 let requestSlide = (() => {});
 let triggerRemoteEvent = (() => {});
 
@@ -14,7 +20,7 @@ function goToSlide(i) {
 		oldSlide.removeClass('active');
 		newSlide.addClass('active');
 		slide.setup(newSlide.attr('id'));
-		slide.teardown(oldSlideId);
+		oldSlide.one('transitionend', () => slide.teardown(oldSlideId));
 		requestSlide(i);
 	}
 }
@@ -70,10 +76,10 @@ if (location.hash) {
 	goToSlide(0);
 }
 
-var touches = new Hammer($('.slide-container')[0]);
-touches.set({ direction: Hammer.DIRECTION_HORIZONTAL });
-touches.on('swipeleft', () => goToNextSlide());
-touches.on('swiperight', () => goToPrevSlide());
+// var touches = new Hammer($('.slide-container')[0]);
+// touches.set({ direction: Hammer.DIRECTION_HORIZONTAL });
+// touches.on('swipeleft', () => goToNextSlide());
+// touches.on('swiperight', () => goToPrevSlide());
 $('.next-button').on('click', e => {
 	goToNextSlide();
 	e.stopPropagation();
