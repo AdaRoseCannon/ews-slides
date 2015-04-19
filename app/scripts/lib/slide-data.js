@@ -71,7 +71,6 @@ module.exports = {
 
 			t.html(templates.demoApp);
 			timeouts.s3 = setInterval(() => {
-				console.log('boo');
 				$(this).find('.notifications-go-here').prepend($(templates.notification));
 			}, 3000);
 			yield;
@@ -84,9 +83,11 @@ module.exports = {
 	'slide-4': {
 		setup() {},
 		action: function* () {
-
+			debugger;
 			var t = $(this).find('.render-here');
 			var templates = Templates['slide-4'];
+			t.html(templates.modal);
+			t.find('.modal').modal();
 			yield;
 			t.html(marked(templates.containment));
 			yield;

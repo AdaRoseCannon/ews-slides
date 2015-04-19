@@ -36,6 +36,10 @@ body {
 	flex-direction: column;
 }
 
+.modal-backdrop {
+	display: none;
+}
+
 .slide-container {
 	overflow: hidden;
 	width: 100%;
@@ -172,24 +176,25 @@ body {
 		width: 1.5em;
 		color: green;
 		float: left;
+
+		&.bad-anim-div {
+			color: red;
+			float: left;
+			animation-name: bad;
+			animation-duration: 4s;
+			animation-iteration-count: infinite;
+
+			&.bad2 {
+				float: right;
+				animation-delay: 2s;
+			}
+		}
 	}
+
 
 	#slide-2 {
 
 		.render-here {
-
-			.bad-anim-div {
-				color: red;
-				float: left;
-				animation-name: bad;
-				animation-duration: 4s;
-				animation-iteration-count: infinite;
-
-				&.bad2 {
-					float: right;
-					animation-delay: 2s;
-				}
-			}
 
 			.squidge {
 				animation-name: squidge;
@@ -219,6 +224,16 @@ body {
 			.panel:first-child {
 				margin-top: -4em;
 			}
+		}
+	}
+
+	#slide-4 {
+		.modal-dialog {
+			z-index: 2;
+		}
+
+		.emoji-image-container {
+			font-size: 6em;
 		}
 	}
 }
