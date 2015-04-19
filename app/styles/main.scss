@@ -110,9 +110,18 @@ body {
 		}
 	}
 
+	.render-here {
+		transition: opacity 0.3s ease;
+		opacity: 1;
+	}
+
+	.render-here:empty {
+		opacity: 0;
+	}
+
 	// Title slide
 	#slide-0 {
-		.panel-primary {
+		> .panel-primary {
 			background: url('../images/blue-orange-yellow.jpg');
 			background-repeat: no-repeat;
 			background-size: cover;
@@ -155,8 +164,6 @@ body {
 	#slide-2 {
 
 		.render-here {
-			font-size: 0.5em;
-			color: grey;
 
 			.bad-anim-div {
 				color: red;
@@ -175,6 +182,29 @@ body {
 				animation-name: squidge;
 				animation-duration: 4s;
 				animation-iteration-count: infinite;
+				font-size: 0.5em;
+				color: grey;
+			}
+		}
+	}
+
+	#slide-3 {
+		.pretend-web-app {
+			margin: 0 20%;
+			overflow: hidden;
+			bottom: 3em;
+			top: 2em;
+			position: absolute;
+
+			.panel-default {
+				color: grey;
+			}
+
+			.panel-body {
+				overflow: hidden;
+			}
+			.panel:first-child {
+				margin-top: -4em;
 			}
 		}
 	}

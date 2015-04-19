@@ -52,31 +52,22 @@
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
-					<div class="panel-body">
-
-						<ul>
-							<li>Jank is when the frame takes longer to layout and render than 16ms. Causes a stutter it feels bad.</li>
-							<li>Caused by slow synchronous events</li>
-							<li>e.g. XHR, big localstorage uses but most commonly...</li>
-							<li>Page layouts and paints</li>
-						</ul>
-						<hr />
-						<ul>
-							<li>Layout is slowest</li>
-							<li>Making a small DOM change could potentially invalidate the entire DOM tree causing it to be recalculated</li>
-							<li>An invalidated DOM is recalculated each frame and whenever a layout property is read</li>
-						</ul>
-						<hr />
-						<ul>
-							<li>Paint is medium slow</li>
-							<li>This is where the layer's bitmap has been invalidated and needs to be redrawn and stored in memory</li>
-							<li>This is done on each render</li>
-						</ul>
-						<hr />
-						<ul>
-							<li>Composite is very fast</li>
-							<li>Composite only involves the graphics card rerendering from bitmaps calculated in paint/li>
-						</ul>
+					<div class="panel-body marked">
+* Jank is when the frame takes longer to layout and render than 16ms. Causes a stutter it feels bad.
+* Caused by slow synchronous events
+* e.g. XHR, big localstorage uses but most commonly...
+* Page layouts and paints
+--------
+* Layout is slowest
+* Making a small DOM change could potentially invalidate the entire DOM tree causing it to be recalculated
+* An invalidated DOM is recalculated each frame and whenever a layout property is read
+--------
+* Paint is medium slow
+* This is where the layer's bitmap has been invalidated and needs to be redrawn and stored in memory
+* This is done on each render
+--------
+* Composite is very fast
+* Composite only involves the graphics card rerendering from bitmaps calculated in paint
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -87,18 +78,22 @@
 
 			<div class="slide" id="slide-2">
 				<div class="panel panel-primary"><div class="panel-body">
-					<div class="ftlabs-title-container">
-						<h1>Bad Stuff</h1>
-						<div class="render-here"></div>
-					</div>
+					<div class="render-here"><h1>Bad Stuff</h1></div>
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body marked">
 * Two commonly seen mistakes
-* The First is Reading then writing in a loop which thrashes the DOM
-* The second is animating properties which cause layouts on the DOM
+* The First is Reading then writing in a loop which thrashes the DOM becasue the layout is invalidated and recalculated on every single read.
+* The second is animating properties which cause layouts on the DOM this slide is making my fan spin up and makes a phone cry and this has a relatively simple DOM structure. On this slide the layout is recalculated every single frame.
 -----------
+* The fix for the first situation tends to be fairly simple batch your reads and write all together. Don't change a property then immediately read it. Don't append to an `innerhtml` in a loop add it to a seperate string and update it in one go.
+* Wilson Page's fastdom library can help with this in an mvc or a large framework with many independent modules so that reads and writes in a single frame all get done together.
+* A good general motto is to calculate all DOM changes first then apply them in a single step.
+-----------
+* This still leaves us with the second issue, how do you animate something which changes the layout?
+* One very common use case is a list widget which grows as an element is added.
+* This can affect the whole dom so would be very expensive to animate.
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -109,24 +104,38 @@
 
 			<div class="slide" id="slide-3">
 				<div class="panel panel-primary"><div class="panel-body">
-					<div class="ftlabs-title-container">
-						<h1>As developers what this means for us</h1>
-						<div class="demo"><h3><pre>
-.containment {
-	height: <fixed value>
-	width: <fixed value or a %>
-	overflow: hidden
-	position: absolute
-}
-						</pre></h3></div>
-					</div>
+					<div class="render-here"></div>
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
-					<div class="panel-body">
-						There are some band aid solutions: For non animated changes use a tool like FastDom which will batch DOM reads and writes so that only one layout occurs.
-
-						There is a currently in draft css spec for containment which lets the browser know that this element is independent from the rest of the page and thus if it is changed don’t invalidate the whole DOM tree’s layout, we refer to these as layout boundaries. This can be achieved today (although it is down to the individual implementation in the UA) by defining certain style attributes the UA should determine that it is in such a state at least in chrome anyway.
+					<div class="panel-body marked">
+* Let's say we have an app like so
+* and we want to animate prepending an element to the start,
+* here we have an issue because as you can see heights change and many elements move,
+* so just animating the height change is not an issue since the entire document will need to get relaid out.
+* but following on from earlier before we insert the new notification we can measure how everything will change
+* then animate the change.
+* when doing something like this it is best to front load all of the dom read/writes so the app is responsive as the animation finishes.
+* if it is a dom change on a button click then you have about a whole 100ms to measure and write to the DOM before it feels sluggish.
+* (? perhaps also take this time to perform a prefetch)
+* this method follows up from a great talk given by paul lewis at the chrome dev summit
+-------
+Follow it through in detail
+* Measure everything we want to measure.
+* store the current animation so it can be restored later set it to ‘0s’
+* store the current transform so it can be restored later
+* Perform the function
+* Measure the new positions, sizes,
+* Anything which has changed size: scale it and all give all of its children the inverse transform.
+* * Give all the children the offset of the top left of the parent
+* * Give them the inverse scale
+* apply the translations to move everything to its new place
+* apply the new transition to everything affected
+* set all of the transforms to their original values
+* watch everything smoothly animate.
+* on transitionend
+* * restore the transitions
+* * fire any callbacks
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -135,43 +144,19 @@
 				</div>
 			</div>
 
-
-			<div class="slide" id="slide-3">
-				<div class="panel panel-primary"><div class="panel-body">
-					<div class="ftlabs-title-container">
-						<h1>As developers what this means for us</h1>
-					</div>
-				</div></div>
-				<div class="panel panel-info notes">
-					<div class="panel-heading">Notes</div>
-					<div class="panel-body">
-						There are some band aid solutions: For non animated changes use a tool like FastDom which will batch DOM reads and writes so that only one layout occurs.
-
-						There is a currently in draft css spec for containment which lets the browser know that this element is independent from the rest of the page and thus if it is changed don’t invalidate the whole DOM tree’s layout, we refer to these as layout boundaries. This can be achieved today (although it is down to the individual implementation in the UA) by defining certain style attributes the UA should determine that it is in such a state at least in chrome anyway.
-					</div>
-					<div class="panel-footer">
-						<button type="button" class="btn btn-default prev-button">Previous</button>
-						<button type="button" class="btn btn-primary next-button">Next</button>
-					</div>
-				</div>
-			</div>
 
 			<div class="slide" id="slide-4">
 				<div class="panel panel-primary"><div class="panel-body">
-					<div class="ftlabs-title-container">
-						<h1>But! it's not all easy</h1>
-					</div>
+					<h1>All is not hopeless...</h1>
+				<div class="render-here"></div>
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
-					<div class="panel-body">
-						<p>But! Animating anything which relayouts the page during the animation requires lots of extra work for us the developer to avoid doing lots of work in the browser.</p>
-
-						<p>The best solution i’ve seen involves measuring the end position and the start position and then repositioning every element back to their original location using css transforms. Adding the animation and then resetting the transforms.</p>
-
-						<p>Whilst working on another project I wanted to change the dom and then dynamically grow the container to fill the new space then fade in the new element. Which had the new challenge since animating height is very expensive how could I animate this using scale. Well here’s how:</p>
-
-						<p>Primarily we take advantage that it only animates on an interaction so we can take our time to measure everything make a change then remeasure, we have a whole ~50-100ms before this feels unresponsive. (Do it on touchdown if you have not removed the 100ms touch delay)</p>
+					<div class="panel-body marked">
+* It is possible to alter the layout on a simple widget and not have the whole dom affected.
+* There is a draft css spec called containment which will hint to the browser in much the same way as the will-change property that this element will not affect the rest of the DOM tree.
+* It requires cerain properties such as no scrolling and fixed dimensions.
+* It could be done in browsers previouly but it relied on the element having certain properties before it would have layout boundaries such as a fixed height and no scroll, the containment spec still requires these properties but makes it clear what is happening which is good.
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -179,53 +164,20 @@
 					</div>
 				</div>
 			</div>
+
 
 			<div class="slide" id="slide-5">
-				<div class="panel panel-primary"><div class="panel-body">
-					<div class="ftlabs-title-container">
-						<h1>Here is how I do it</h1>
-						<div class="demo"><h3>Awesome step by step demo where after each point the code moves on. Slowly demoing how the browser does it. Live!!</h3></div>
-					</div>
+				<div class="panel panel-primary"><div class="panel-body marked">
+# References
+* http://dev.w3.org/csswg/css-containment/ - Containment Spec
+* Fastdom - Library to avoid read/write loop
+* http://csstriggers.com/ - CSS Triggers
+* https://css-tricks.com/things-chrome-dev-summit-2014/ - Great Paul Lewis talk
 				</div></div>
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body">
-						<ul>
-							<li>Measure everything we want to measure.</li>
-							<li>store the current animation set it to ‘0s’</li>
-							<li>Perform the function</li>
-							<li>Measure the new positions, sizes,</li>
-							<li>Calculate the heirarchies of elements</li>
-							<li>Anything which has changed size: scale it and all give all of its children the inverse transform.</li>
-							<li>apply the translations</li>
-							<li>apply the parents transition to everything</li>
-							<li>set all of the transforms to their original values</li>
-							<li>watch everything smoothly animate.</li>
-						</ul>
-					</div>
-					<div class="panel-footer">
-						<button type="button" class="btn btn-default prev-button">Previous</button>
-						<button type="button" class="btn btn-primary next-button">Next</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="slide" id="slide-6">
-				<div class="panel panel-primary"><div class="panel-body">
-					<div class="ftlabs-title-container">
-						<h1>References</h1>
-						<ul>
-							<li>http://dev.w3.org/csswg/css-containment/ - Containment Spec</li>
-							<li>Fastdom - Library to avoid read/write loop</li>
-							<li>http://csstriggers.com/ - CSS Triggers</li>
-							<li>https://css-tricks.com/things-chrome-dev-summit-2014/ - Great Paul Lewis talk</li>
-						</ul>
-					</div>
-				</div></div>
-				<div class="panel panel-info notes">
-					<div class="panel-heading">Notes</div>
-					<div class="panel-body">
-						Thanks, any questions.
+Thanks, any questions.
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
