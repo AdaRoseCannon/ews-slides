@@ -12,7 +12,7 @@ module.exports = {
 		`
 ## Great Resource:
 ![](images/css-triggers.png)
-http://csstriggers.com/
+# http://csstriggers.com/
 		`,
 	],
 	"slide-2": [

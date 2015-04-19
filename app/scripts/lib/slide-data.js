@@ -16,9 +16,10 @@ module.exports = {
 
 			var t = $(this).find('.render-here');
 			var templates = Templates['slide-1'];
+			var image = $(templates[0]);
 			yield;
 
-			t.html(templates[0]);
+			t.append(image);
 			yield;
 
 			t.html(marked(templates[1]));
@@ -43,7 +44,7 @@ module.exports = {
 			var pre = $('<pre></pre>');
 			t.append(pre);
 			timeouts.s2 = setInterval(() => {
-				pre.append(i++ % 2 === 1 ? 'myVar = el.getBoundingClientRect().height;' : 'el.height = (myVar + 1) + "px"');
+				pre.append(i++ % 2 === 1 ? 'myVar = el.clientHeight;' : 'el.height = (myVar + 1) + "px"');
 				pre.append('\n');
 			}, 800);
 			yield;
