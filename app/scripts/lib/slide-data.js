@@ -70,9 +70,11 @@ module.exports = {
 			var templates = Templates['slide-3'];
 
 			t.html(templates.demoApp);
-			timeouts.s3 = setInterval(() => {
-				$(this).find('.notifications-go-here').prepend($(templates.notification));
-			}, 3000);
+			var addNotification = function () {
+				t.find('.notifications-go-here').prepend($(templates.notification));
+			}.bind(this);
+			setTimeout(addNotification, 500);
+			timeouts.s3 = setInterval(addNotification, 2000);
 			yield;
 		},
 		teardown() {
@@ -83,7 +85,6 @@ module.exports = {
 	'slide-4': {
 		setup() {},
 		action: function* () {
-			debugger;
 			var t = $(this).find('.render-here');
 			var templates = Templates['slide-4'];
 			t.html(templates.modal);
@@ -93,7 +94,6 @@ module.exports = {
 			yield;
 		},
 		teardown() {
-			clearInterval(timeouts.s3);
 			$(this).find('.render-here').html('');
 		}
 	},

@@ -14,12 +14,15 @@ let triggerRemoteEvent = (() => {});
 
 function goToSlide(i) {
 	const newSlide = $(`.slide:nth-child(${i + 1})`);
+	const newSlideId = newSlide.attr('id');
 	const oldSlide = $('.slide.active');
 	const oldSlideId = oldSlide.attr('id');
 	if (newSlide[0]) {
 		oldSlide.removeClass('active');
 		newSlide.addClass('active');
-		slide.setup(newSlide.attr('id'));
+		slide.teardown(newSlideId);
+		slide.setup(newSlideId);
+		newSlide.off('transitionend');
 		oldSlide.one('transitionend', () => slide.teardown(oldSlideId));
 		requestSlide(i);
 	}
