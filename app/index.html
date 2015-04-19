@@ -29,7 +29,8 @@
 			<div class="slide active" id="slide-0">
 				<div class="panel panel-primary"><div class="panel-body">
 					<div class="ftlabs-title-container">
-						<h1>Extensible Web Summit 2015</h1>
+						<h1>Animation Performance</h1>
+						<h3>Extensible Web Summit 2015</h3>
 						<h3>Ada Rose Edwards - FTLabs<br />@lady_ada_king</h3>
 					</div>
 				</div></div>
@@ -37,9 +38,7 @@
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body marked">
 * Hi, I'm Ada Rose from FTLabs
-* i’m here to talk today about practical rendering performance.
-* There is so much more to say than can fit into a 5 minute talk so I will rush over a few concepts for good performance.
-* I will avoid going into too much detail on the render pipeline, for excellent coverage of Paul Lewis has done some excellent talks.
+* I’m here to talk today about practical rendering performance.
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-primary next-button">Next</button>
@@ -55,15 +54,13 @@
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body marked">
-* Jank is when the frame takes longer to layout and render than 16ms. Causes a stutter it feels bad.
-* Caused by slow synchronous events
+* Jank is when the frame takes longer to layout and render than 16ms to hit fps. Causes a stutter it feels bad.
 * Shows up in the timeline as very tall bars
-* e.g. XHR, large localstorage io or long cpu bound calculations but most commonly...
-* Page Layouts and Paints
+* Caused by slow synchronous eventsmost commonly Layouts and Paints
 --------
 * Layout is slowest
 * Making a small DOM change could potentially invalidate the entire DOM tree causing it to be recalculated
-* An invalidated DOM is recalculated each frame and whenever a layout property is read
+* An invalidated DOM is recalculated whenever a layout property is read and each rendered frame
 --------
 * Paint is medium slow
 * This is where the layer's bitmap has been invalidated and needs to be redrawn and stored in memory
@@ -72,7 +69,7 @@
 * Composite is very fast
 * Composite only involves the graphics card rerendering from bitmaps calculated in paint
 --------
-* CSS triggers is a great resourcce it lists whether a change involves Just composite, paint and composite or layout paint and composite.
+* (CSS triggers is a great resource it lists whether a change involves Just composite, paint and composite or layout paint and composite.)
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -88,18 +85,17 @@
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body marked">
-* Two commonly seen mistakes
-* The First is Reading then writing in a loop which thrashes the DOM becasue the layout is invalidated and recalculated on every single read.
+* Writing to DOM is free, you can write as much as you want
+* Once the DOM is read if it has been invalidated it needs to be recalculated which is expensive
+* One common problem is reading then writing in a loop which thrashes the DOM; the layout is invalidated and recalculated on every single read.
+* Which could mean multiple layout operations per frame
 * The second is animating properties which cause layouts on the DOM. Even for this simple layout having to recalculate the layout every frame is making my laptop's fan spin up.
 -----------
-* The fix for the first situation tends to be fairly simple batch your reads and write all together. Don't change a property then immediately read it.
+* The fix for the first situation tends to be fairly simple: batch your reads and write all together. Don't change a property then immediately read it.
 * E.g.Don't append to an `innerhtml` in a loop INSTEAD add it to a seperate string and update the `innerHTML` in one go.
+### Fastdom slide
 * In an mvc or a large framework with many independent modules it can be difficult to ensure modules do not interleave read and writes Wilson Page's fastdom library can help with this so that reads and writes in a single frame all get done together.
 * A good general motto is to calculate all DOM changes first then apply them in a single step.
------------
-* This still leaves us with the second issue, how do you animate something which changes the layout?
-* One very common use case is a list widget which grows as an element is added.
-* This can affect the whole dom so would be very expensive to animate.
 					</div>
 					<div class="panel-footer">
 						<button type="button" class="btn btn-default prev-button">Previous</button>
@@ -117,8 +113,8 @@
 					<div class="panel-body marked">
 * Let's say we have an app like so
 * and we want to animate prepending an element to the start,
-* here we have an issue because as you can see heights change and many elements move,
-* so just animating the height change is not an issue since the entire document will need to get relaid out.
+* here we have an issue because as you can see height changes which pushes many elements around the page because of this change,
+* so it's expensive because it's a layout operation and much worse because the whole page will change
 * but following on from earlier before we insert the new notification we can measure how everything will change
 * then animate the change.
 * when doing something like this it is best to front load all of the dom read/writes so the app is responsive as the animation finishes.
@@ -159,7 +155,10 @@ Follow it through in detail
 				<div class="panel panel-info notes">
 					<div class="panel-heading">Notes</div>
 					<div class="panel-body marked">
-* It is possible to alter the layout on a simple widget and not have the whole dom affected.
+* Even though this modal looks isolated the browser may still relayout the whole Dom
+* but we can seperate it's DOM invalidation from the rest of the page
+* Doing so doesn't accelerate the animation but it does make the layout change less catastophic.
+----------
 * There is a draft css spec called containment which will hint to the browser in much the same way as the will-change property that this element will not affect the rest of the DOM tree.
 * It requires cerain properties such as no scrolling and fixed dimensions.
 * It could be done in browsers previouly but it relied on the element having certain properties before it would have layout boundaries such as a fixed height and no scroll, the containment spec still requires these properties but makes it clear what is happening which is good.

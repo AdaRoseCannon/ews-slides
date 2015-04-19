@@ -11,6 +11,7 @@ module.exports = {
 		`,
 		`
 ## Great Resource:
+### Paul Lewis's CSS Triggers
 ![](images/css-triggers.png)
 # http://csstriggers.com/
 		`,
