@@ -28,8 +28,6 @@ function goToSlide(i) {
 	}
 }
 
-window.goToSlide = goToSlide;
-
 function goToNextSlide() {
 	goToSlide($('.slide.active').prevAll().length + 1);
 }
