@@ -17,7 +17,7 @@ function goToSlide(i) {
 	const newSlideId = newSlide.attr('id');
 	const oldSlide = $('.slide.active');
 	const oldSlideId = oldSlide.attr('id');
-	if (newSlide[0]) {
+	if (newSlide[0] && newSlide[0] !== oldSlide[0]) {
 		oldSlide.removeClass('active');
 		newSlide.addClass('active');
 		slide.teardown(newSlideId);
@@ -27,6 +27,8 @@ function goToSlide(i) {
 		requestSlide(i);
 	}
 }
+
+window.goToSlide = goToSlide;
 
 function goToNextSlide() {
 	goToSlide($('.slide.active').prevAll().length + 1);
