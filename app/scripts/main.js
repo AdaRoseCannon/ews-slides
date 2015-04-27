@@ -65,7 +65,6 @@ if (location.hash) {
 	goToSlide(0);
 }
 
-
 window.addEventListener('keyup', e => {
 	switch(e.keyCode) {
 		case 37:
