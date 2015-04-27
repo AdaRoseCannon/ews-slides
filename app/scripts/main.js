@@ -59,6 +59,12 @@ webrtc(location.hash === '#controller').then(user => {
 	console.error('Failure to connect to webrtc', err);
 });
 
+if (location.hash) {
+	goToSlideBySelector(location.hash);
+} else {
+	goToSlide(0);
+}
+
 
 window.addEventListener('keyup', e => {
 	switch(e.keyCode) {
@@ -72,12 +78,6 @@ window.addEventListener('keyup', e => {
 			break;
 	}
 });
-
-if (location.hash) {
-	goToSlideBySelector(location.hash);
-} else {
-	goToSlide(0);
-}
 
 // var touches = new Hammer($('.slide-container')[0]);
 // touches.set({ direction: Hammer.DIRECTION_HORIZONTAL });
