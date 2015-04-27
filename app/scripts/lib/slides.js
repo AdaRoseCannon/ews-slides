@@ -1,7 +1,9 @@
 const slideData = require('./slide-data');
 
 module.exports.triggerEvent = {
-	next() {}
+	next() {
+		return {done: false};
+	}
 };
 
 module.exports.setup = function (name) {
